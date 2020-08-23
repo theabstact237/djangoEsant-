@@ -1,18 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 import json
 import datetime
 from .models import * 
 from .utils import cookieCart, cartData, guestOrder
-from django.views.generic import View
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView
+)
 from django.core.mail import send_mail
-class ProductDetailView(View):
-	model = Product
-	template_name = 'store/product_detail.com'
-    def get(self, request, *args, **kwargs):
-        product = get_object_or_404(Product, pk=kwargs['pk'])
-        context = {'product': product}
-        return render(request, 'product/product_detail.html', context)
+from .models import Product
+
+class ProductDetailView(DetailView):
+    model = Product
+
 
 def store(request):
 	data = cartData(request)
@@ -25,6 +29,16 @@ def store(request):
 	context = {'products':products, 'cartItems':cartItems}
 	return render(request, 'store/accueil.html', context)
 
+def boutique(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+
+	products = Product.objects.all()
+	context = {'products':products, 'cartItems':cartItems}
+	return render(request, 'store/boutique.html', context)
 
 def cart(request):
 	data = cartData(request)
@@ -46,20 +60,20 @@ def contact(request):
 
 	context = {'items':items, 'order':order, 'cartItems':cartItems}
 	if request.method =="POST":
-       message_name = request.POST['message-name']
-	   message_email = request.POST['message-email']
-	   message_name = request.POST['message']
-	   send_mail( 
-		          message_name,#name
-				  message,#message
-				  message_email,#FromEmail
-				  ['siakatayoukarlwilliam@gmail.com','alkainfri@gmail.com']#ToEmail
-				  )
+		message_name = request.POST['message-name']
+		message_email = request.POST['message-email']
+		message_name = request.POST['message']
+		send_mail( 
+					message_name,#name
+					message,#message
+					message_email,#FromEmail
+					['siakatayoukarlwilliam@gmail.com','alkainfri@gmail.com']#ToEmail
+					)
 
 	   
-	   return render(request, 'store/contact.html',{'message_name'})
-    else:
-	return render(request, 'store/contact.html', context)
+		return render(request, 'store/contact.html',{'message_name'})
+	else:
+		return render(request, 'store/contact.html', context)
 
 def checkout(request):
 	data = cartData(request)

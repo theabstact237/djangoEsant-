@@ -4,8 +4,8 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 class Customer(models.Model):
-	user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE,verbose_name=('user'))
-	name = models.CharField(max_length=200, null=True,verbose_name=('name'))
+	user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE,verbose_name=('utilisateur'))
+	name = models.CharField(max_length=200, null=True,verbose_name=('nom'))
 	email = models.CharField(max_length=200,verbose_name=('email'))
  
 	class Meta:
@@ -14,20 +14,26 @@ class Customer(models.Model):
 
 	def __str__(self):
 		return self.name
-
+    
 
 class Product(models.Model):
-	name = models.CharField(max_length=200, verbose_name=('name'))
+	name = models.CharField(max_length=200, verbose_name=('nom'))
 	price = models.FloatField()
-	category = models.CharField(max_length=200, null=True, verbose_name=('category') )
-	available = models.BooleanField(default=False,null=True, blank=True, verbose_name=('available'))
+	category = models.CharField(max_length=200, null=True, verbose_name=('categorie') )
+	available = models.BooleanField(default=False,null=True, blank=True, verbose_name=('disponibilité'))
 	image = models.ImageField(null=True, blank=True)
+	description = models.CharField(max_length=500, null=True, verbose_name=('description')) 
+
+	
 	class Meta:
 		verbose_name = _('produit')
 		verbose_name_plural = _('produits')
 
 	def __str__(self):
 		return self.name
+    
+	def get_absolute_url(self):
+		return reverse('product_detail', kwargs={'pk': self.pk})
 
 	@property
 	def imageURL(self):
@@ -38,8 +44,8 @@ class Product(models.Model):
 		return url
 
 class Order(models.Model):
-	customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=('customer'))
-	date_ordered = models.DateTimeField(auto_now_add=True, verbose_name=('date_ordered'))
+	customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=('client'))
+	date_ordered = models.DateTimeField(auto_now_add=True, verbose_name=('date_commande'))
 	complete = models.BooleanField(default=False, verbose_name=('complete'))
 	transaction_id = models.CharField(max_length=100, null=True, verbose_name=('transaction_id'),)
 
@@ -74,9 +80,9 @@ class Order(models.Model):
 		return total 
 
 class OrderItem(models.Model):
-	product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name=('product'))
-	order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, verbose_name=('order'))
-	quantity = models.IntegerField(default=0, null=True, blank=True, verbose_name=('quantity') )
+	product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name=('produit'))
+	order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, verbose_name=('commande'))
+	quantity = models.IntegerField(default=0, null=True, blank=True, verbose_name=('quantité') )
 
 	date_added = models.DateTimeField(auto_now_add=True)
 	class Meta:
@@ -89,13 +95,13 @@ class OrderItem(models.Model):
 		return total
 
 class ShippingAddress(models.Model):
-	customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, verbose_name=('customer'))
-	order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, verbose_name=('order'))
-	address = models.CharField(max_length=200, null=False, verbose_name=('address') )
-	city = models.CharField(max_length=200, null=False, verbose_name=('city'))
-	state = models.CharField(max_length=200, null=False, verbose_name=('state'))
+	customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, verbose_name=('client'))
+	order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, verbose_name=('commande'))
+	address = models.CharField(max_length=200, null=False, verbose_name=('addresse') )
+	city = models.CharField(max_length=200, null=False, verbose_name=('ville'))
+	country = models.CharField(max_length=200, null=True, verbose_name=('pays'))
 	zipcode = models.CharField(max_length=200, null=False, verbose_name=('zipcode'))
-	date_added = models.DateTimeField(auto_now_add=True, verbose_name=('date_added'))
+	date_added = models.DateTimeField(auto_now_add=True, verbose_name=('date_ajouté'))
     
 	class Meta:
 		verbose_name = _('Adresse de livraison')

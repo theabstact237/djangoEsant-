@@ -9,13 +9,21 @@ from django.views.generic import (
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView
+    DeleteView,
+	
 )
 from django.core.mail import send_mail
 from .models import Product
 
 class ProductDetailView(DetailView):
     model = Product
+
+def CategoryView(request, cats):
+	category_products = Product.objects.filter(category=cats)
+
+	cat_menu = Category.objects.all()
+	return render(request, 'store/categories.html', {'cats':cats.title(), 'category_products':category_products, 'cat_menu':cat_menu })
+
 
 
 def store(request):
@@ -24,9 +32,10 @@ def store(request):
 	cartItems = data['cartItems']
 	order = data['order']
 	items = data['items']
+	cat_menu = Category.objects.all()
 
 	products = Product.objects.all()
-	context = {'products':products, 'cartItems':cartItems}
+	context = {'products':products, 'cartItems':cartItems,'cat_menu':cat_menu}
 	return render(request, 'store/accueil.html', context)
 
 def boutique(request):
@@ -35,20 +44,91 @@ def boutique(request):
 	cartItems = data['cartItems']
 	order = data['order']
 	items = data['items']
-
+	cat_menu = Category.objects.all()
+	
 	products = Product.objects.all()
-	context = {'products':products, 'cartItems':cartItems}
+	context = {'products':products, 'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
 	return render(request, 'store/boutique.html', context)
 
+def propos(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+	cat_menu = Category.objects.all()
+	
+	products = Product.objects.all()
+	context = {'products':products, 'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
+	return render(request, 'store/propos.html', context)
+
+def cgv(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+	cat_menu = Category.objects.all()
+
+	products = Product.objects.all()
+	context = {'products':products, 'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
+	return render(request, 'store/conditions-generales-de-vente.html', context)
+    
 def cart(request):
 	data = cartData(request)
 
 	cartItems = data['cartItems']
 	order = data['order']
 	items = data['items']
-
-	context = {'items':items, 'order':order, 'cartItems':cartItems}
+	cat_menu = Category.objects.all()
+	
+	context = {'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
 	return render(request, 'store/cart.html', context)
+def politique(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+	cat_menu = Category.objects.all()
+	
+	products = Product.objects.all()
+	context = {'products':products, 'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
+	return render(request, 'store/politique-de-confidentialite.html', context)
+def retour(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+	cat_menu = Category.objects.all()
+	
+	products = Product.objects.all()
+	context = {'products':products, 'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
+	return render(request, 'store/politique-de-retour.html', context)
+def paiement(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+	cat_menu = Category.objects.all()
+	
+	products = Product.objects.all()
+	context = {'products':products, 'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
+	return render(request, 'store/paiement-et-livraison.html', context)
+
+def faq(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+	cat_menu = Category.objects.all()
+	
+	products = Product.objects.all()
+	context = {'products':products, 'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
+	return render(request, 'store/faq.html', context)
 
 
 def contact(request):
@@ -57,8 +137,9 @@ def contact(request):
 	cartItems = data['cartItems']
 	order = data['order']
 	items = data['items']
+	cat_menu = Category.objects.all()
 
-	context = {'items':items, 'order':order, 'cartItems':cartItems}
+	context = {'items':items, 'order':order, 'cartItems':cartItems,'cat_menu':cat_menu }
 	if request.method =="POST":
 		message_name = request.POST['message-name']
 		message_email = request.POST['message-email']
@@ -108,7 +189,7 @@ def updateItem(request):
 	if orderItem.quantity <= 0:
 		orderItem.delete()
 
-	return JsonResponse('Item was added', safe=False)
+	return JsonResponse('article ajouté', safe=False)
 
 def processOrder(request):
 	transaction_id = datetime.datetime.now().timestamp()
@@ -133,8 +214,8 @@ def processOrder(request):
 		order=order,
 		address=data['shipping']['address'],
 		city=data['shipping']['city'],
-		state=data['shipping']['state'],
+		country=data['shipping']['country'],
 		zipcode=data['shipping']['zipcode'],
 		)
 
-	return JsonResponse('Payment submitted..', safe=False)
+	return JsonResponse('Payement transmit..', safe=False)

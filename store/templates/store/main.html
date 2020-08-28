@@ -72,32 +72,33 @@
 
 	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    <ul class="navbar-nav mr-auto">
+         {% if cat_menu %}
 			  <li>
 		   <!-- Basic dropdown -->
+		  
 <button class="btn btn-primar dropdown-toggle mr-1 rounded-left rounded-right  " type="button" data-toggle="dropdown"
   aria-haspopup="true" aria-expanded="false" style="color:">Catégories</button>
-
+ 
 <div class="dropdown-menu">
-  <a class="dropdown-item" href="#">Masques médicals</a>
-  <a class="dropdown-item" href="#">Masques en tissus</a>
-  <a class="dropdown-item" href="#">Gels hydroalcooliques</a>
-  <a class="dropdown-item" href="#">Distributeurs hydroalcooliques</a>
-  <a class="dropdown-item" href="#">Blouses médicales</a>
-  <a class="dropdown-item" href="#">Gants de protection</a>
-  <a class="dropdown-item" href="#">Protections du visage</a>
-  <a class="dropdown-item" href="#"></a>
-  <a class="dropdown-item" href="#"></a>
-  <div class="dropdown-divider"></div>
+	{% for item in cat_menu %}
+  <a class="dropdown-item" href="{% url 'category' item%}">{{item}}</a>
+  {% endfor %}
+  <!--<div class="dropdown-divider"></div>
   <a class="dropdown-item" href="#">Autres</a>
-</div>
+</div>-->
 <!-- Basic dropdown -->
 	 </li>
+	 {% endif %}
 	 <li class="nav-item active">
 		<a class="nav-link" href="{% url 'boutique' %}">Boutique <span class="sr-only">(current)</span></a>
 	  </li>
 	  <li class="nav-item active">
+		<a class="nav-link" href="{% url 'propos' %}">A propos de nous <span class="sr-only"></span></a>
+	  </li>
+	  <li class="nav-item active">
 		<a class="nav-link" href="{% url 'contact' %}">Contact <span class="sr-only"></span></a>
 	  </li>
+	  
 	    </ul>
 	    <div class="form-inline my-2 my-lg-0">
 			
@@ -130,13 +131,13 @@
 				<div class="col-xs-12 col-sm-4 col-md-4">
 					<h1>Ecom</h1>
 					<ul class="list-unstyled quick-links">
-						<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Accueil</a></li>
-						<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Boutique</a></li>
-						<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>A propos</a></li>
+						<li><a href="{% url 'store' %}"><i class="fa fa-angle-double-right"></i>Accueil</a></li>
+						<li><a href="{% url 'boutique' %}"><i class="fa fa-angle-double-right"></i>Boutique</a></li>
+						<li><a href="{% url 'propos' %}"><i class="fa fa-angle-double-right"></i>A propos</a></li>
 						
-						<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Contact</a></li>
-						<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>FAQ</a></li>
-						<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Politique de confidentialité</a></li>
+						<li><a href="{% url 'contact' %}"><i class="fa fa-angle-double-right"></i>Contact</a></li>
+						<li><a href="{% url 'faq' %}"><i class="fa fa-angle-double-right"></i>FAQ</a></li>
+						
 						{% if request.user.is_authenticated %}
 						<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Déconnexion</a></li>
 						 {% else %}
@@ -155,12 +156,17 @@
         </form>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-4">
-					<h5>Contacts</h5>
+					<h5>Politiques</h5>
 					<ul class="list-unstyled quick-links">
-						<li><a href="javascript:void();"><i class="fa fa-phone"></i> +237691666113</a></li>
-						<li><a href="javascript:void();"><i class="fa fa-envelope"></i> email@gmail.com</a></li>
-	
+						<!--<li><a href="javascript:void();"><i class="fa fa-phone"></i> +237691666113</a></li>
+						<li><a href="javascript:void();"><i class="fa fa-envelope"></i> email@gmail.com</a></li>-->
+						
+							<li><a href="{% url 'conditions-générales-de-ventes' %}"><i class="fa fa-angle-double-right"></i>Conditions générales de vente</a></li>
+							<li><a href="{% url 'politique-de-confidentialité' %}"><i class="fa fa-angle-double-right"></i>Politique de confidentialité</a></li>
+							<li><a href="{% url 'politique-de-retour' %}"><i class="fa fa-angle-double-right"></i>Politique de retour</a></li>
+						  <li><a href="{% url 'paiement-et-livraison' %}"><i class="fa fa-angle-double-right"></i>Paiement et livraison</a></li>
 						<li><a href="https://www.linkedin.com/mwlite/in/siaka-karl-45b219119" title="Design and developed by"><i class="fa fa-angle-double-right"></i>....</a></li>
+
 					</ul>
 				</div>
 			</div>
@@ -171,7 +177,7 @@
 						<li class="list-inline-item"><a href="javascript:void();"><i class="fa fa-twitter"></i></a></li>
 						<li class="list-inline-item"><a href="javascript:void();"><i class="fa fa-instagram"></i></a></li>
 						<li class="list-inline-item"><a href="javascript:void();"><i class="fa fa-google-plus"></i></a></li>
-						<li class="list-inline-item"><a href="javascript:void();" target="_blank"><i class="fa fa-envelope"></i></a></li>
+						<li class="list-inline-item"><a href="{%url 'contact'%}" target="_blank"><i class="fa fa-envelope"></i></a></li>
 					</ul>
 				</div>
 				</hr>

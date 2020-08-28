@@ -15,6 +15,23 @@ class Customer(models.Model):
 	def __str__(self):
 		return self.name
     
+class Category(models.Model):
+	title = models.CharField(max_length=225, verbose_name=('titre'))
+	slug = models.SlugField(unique=True, blank=True, null=True)
+	
+	class Meta:
+		verbose_name = _('categorie')
+		verbose_name_plural = _('categories')
+
+	def __str__(self):
+		return self.title
+
+	def get_absolute_url(self):
+		return reverse('category_detail', kwargs={'slug': self.slug})
+
+	@property
+	def get_products(self):
+		return Products.objects.filter(category=self.title)
 
 class Product(models.Model):
 	name = models.CharField(max_length=200, verbose_name=('nom'))
@@ -23,7 +40,9 @@ class Product(models.Model):
 	available = models.BooleanField(default=False,null=True, blank=True, verbose_name=('disponibilité'))
 	image = models.ImageField(null=True, blank=True)
 	description = models.CharField(max_length=500, null=True, verbose_name=('description')) 
-
+	short_description = models.CharField(max_length=90, null=True, verbose_name=('description')) 
+	quantité = models.IntegerField(default=0, null=True, blank=True, verbose_name=('quantité') )
+	frais_deLivraison = models.FloatField(default=0, null=True, blank=True )
 	
 	class Meta:
 		verbose_name = _('produit')
